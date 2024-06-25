@@ -5,8 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Commands.DriveByJoysticks;
+import frc.robot.SubSystems.SwerveSubSystem.Swerve;
+import frc.robot.Utils.Vector2d;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -21,6 +25,11 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+
+    SmartDashboard.putNumber("target angle", new Vector2d(1,1).theta());
+    SmartDashboard.putNumber("current angle",Swerve.getInstance().modules[0].getSteeringAngle());
+    SmartDashboard.putNumber("target speed", new Vector2d().mag());
+    SmartDashboard.putNumber("current speed", Swerve.getInstance().modules[0].getDrvingSpeed());
   }
 
   @Override
@@ -52,10 +61,15 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+        Swerve.getInstance().modules[0].vectorToModule(new Vector2d(1,1));
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    //DriveByJoysticks teleop = new DriveByJoysticks(null, null, null);
+    //teleop.schedule();
+    
+  }
 
   @Override
   public void teleopExit() {}

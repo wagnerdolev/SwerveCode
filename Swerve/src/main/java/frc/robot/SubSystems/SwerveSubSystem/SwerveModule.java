@@ -32,8 +32,18 @@ public class SwerveModule extends SubsystemBase{
         m_steeringMotor.getPIDController().setI(Consts.SwerveValues.STEERING_MOTOR_KI);
         m_steeringMotor.getPIDController().setD(Consts.SwerveValues.STEERING_MOTOR_KD);
 
+        m_steeringMotor.getEncoder().setPositionConversionFactor(Consts.SwerveValues.STEERING_GEAR_RATION * 360);
+        m_drivingMotor.getEncoder().setVelocityConversionFactor(Consts.SwerveValues.DRIVE_GEAR_RATION * 60 * Consts.SwerveValues.WHEEL_PERIMETER);
 
     }
+    public double getSteeringAngle(){
+        return m_steeringMotor.getEncoder().getPosition();
+    }
+
+    public double getDrvingSpeed(){
+        return m_drivingMotor.getEncoder().getVelocity();
+    }
+    
 
     public void vectorToModule(Vector2d v){
         v.rotateBy(Math.toRadians(90));
@@ -57,4 +67,5 @@ public class SwerveModule extends SubsystemBase{
         m_drivingMotor.getPIDController().setReference(v.mag(), ControlType.kVelocity);
     }
 
+    
 }
