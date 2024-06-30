@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
+import com.revrobotics.CANSparkBase.ControlType;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,6 +21,8 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  public static Vector2d testVec = new Vector2d(3,3);
+
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
@@ -25,11 +31,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-
-    SmartDashboard.putNumber("target angle", new Vector2d(1,1).theta());
-    SmartDashboard.putNumber("current angle",Swerve.getInstance().modules[0].getSteeringAngle());
-    SmartDashboard.putNumber("target speed", new Vector2d().mag());
-    SmartDashboard.putNumber("current speed", Swerve.getInstance().modules[0].getDrvingSpeed());
   }
 
   @Override
@@ -61,12 +62,12 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-        Swerve.getInstance().modules[0].vectorToModule(new Vector2d(1,1));
   }
 
   @Override
   public void teleopPeriodic() {
-    //DriveByJoysticks teleop = new DriveByJoysticks(null, null, null);
+    Swerve.getInstance().getModules()[0].vectorToModule(new Vector2d(RobotContainer.chassis.getLeftX(),RobotContainer.chassis.getLeftY()));
+    //DriveByJoysticks teleop = new DriveByJoysticks(() -> RobotContainer.chassis.getLeftX(), () -> RobotContainer.chassis.getLeftY(), () -> RobotContainer.chassis.getRightX());
     //teleop.schedule();
     
   }

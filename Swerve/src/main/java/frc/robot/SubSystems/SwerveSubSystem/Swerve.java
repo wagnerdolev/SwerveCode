@@ -6,12 +6,12 @@ import frc.robot.Utils.Vector2d;
 
 public class Swerve extends SubsystemBase{
     
-    public SwerveModule[] modules;
+    private SwerveModule[] modules;
     private static Swerve m_swerveInstance;
 
     public Swerve(){
 
-        modules = new SwerveModule[4];
+        modules = new SwerveModule[4]; 
 
         modules[0] = new SwerveModule(Consts.SwerveValues.TOP_RIGHT_DRIVING_MOTOR_ID, Consts.SwerveValues.TOP_RIGHT_STEERING_MOTOR_ID, Consts.SwerveValues.TOP_RIGHT_ENCODER_ID);
         modules[1] = new SwerveModule(Consts.SwerveValues.TOP_LEFT_DRIVING_MOTOR_ID, Consts.SwerveValues.TOP_LEFT_STEERING_MOTOR_ID, Consts.SwerveValues.TOP_LEFT_ENCODER_ID);
@@ -43,5 +43,9 @@ public class Swerve extends SubsystemBase{
             m_swerveInstance = new Swerve();
         }
         return m_swerveInstance;
+    }
+
+    public SwerveModule[] getModules(){
+        return modules;
     }
 }
