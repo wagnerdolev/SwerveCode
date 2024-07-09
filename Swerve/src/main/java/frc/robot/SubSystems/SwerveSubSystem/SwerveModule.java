@@ -1,5 +1,6 @@
 package frc.robot.SubSystems.SwerveSubSystem;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
@@ -18,10 +19,14 @@ public class SwerveModule extends SubsystemBase{
     private CANSparkMax m_drivingMotor, m_steeringMotor;
     private CANcoder m_steeringEncoder;
 
-    public SwerveModule(int drivingMotorID, int steeringMotorID, int CANcoderID){
+    public SwerveModule(int drivingMotorID, int steeringMotorID, int CANcoderID, double canCoderOffset){
         m_drivingMotor = new CANSparkMax(drivingMotorID, MotorType.kBrushless);
         m_steeringMotor = new CANSparkMax(steeringMotorID, MotorType.kBrushless);
+
         m_steeringEncoder = new CANcoder(CANcoderID);
+        CANcoderConfiguration canConfig = new CANcoderConfiguration();
+        canConfig.MagnetSensor.MagnetOffset = 1 - canCoderOffset;
+        m_steeringEncoder.getConfigurator().apply(canConfig);
                        
         m_drivingMotor.restoreFactoryDefaults();
         m_steeringMotor.restoreFactoryDefaults();
@@ -37,20 +42,19 @@ public class SwerveModule extends SubsystemBase{
 
         m_steeringMotor.getEncoder().setPositionConversionFactor(Consts.SwerveValues.STEERING_GEAR_RATION * 360);
         m_drivingMotor.getEncoder().setVelocityConversionFactor(Consts.SwerveValues.DRIVE_GEAR_RATION * Consts.SwerveValues.WHEEL_PERIMETER / 60.0);
+
+        setModulesToAbs();
         
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("target angle", Math.toDegrees(new Vector2d(RobotContainer.chassis.getLeftX(),RobotContainer.chassis.getLeftY()).theta()));
-        SmartDashboard.putNumber("current angle",Funcs.modulo(Swerve.getInstance().getModules()[0].getSteeringAngle(), 360));
-        SmartDashboard.putNumber("target speed", Robot.testVec.mag());
-        SmartDashboard.putNumber("current speed", Swerve.getInstance().getModules()[0].getDrivingSpeed());
+        
     }
 
     public double getSteeringAngle(){
-        return Funcs.modulo(m_steeringMotor.getEncoder().getPosition(),360);
-    }
+        return m_steeringMotor.getEncoder().getPosition();
+        }
 
     public double getDrivingSpeed(){
         return m_drivingMotor.getEncoder().getVelocity();
@@ -59,8 +63,20 @@ public class SwerveModule extends SubsystemBase{
     public CANSparkMax getDrivingMotor(){
         return m_drivingMotor;
     }
-    public void vectorToModule(Vector2d v){
-        v.rotateBy(Math.toRadians(90));
+
+    public void setModulesToAbs() {
+        m_steeringMotor.getEncoder().setPosition(getCoderPos());
+    }
+
+    public double getCoderPos() {
+        return Funcs.convertRotationsToDegrees(m_steeringEncoder.getAbsolutePosition().getValue());
+    }
+    
+    public void vectorToModule(Vector2d v){      
+        SmartDashboard.putNumber("input", Math.toDegrees(v.theta()));
+
+        v.rotateBy(Math.toRadians(180));
+
         double targetAngle = Math.toDegrees(v.theta());
         double currentAngle = m_steeringMotor.getEncoder().getPosition();
         double optimizedAngle = Funcs.closestAngle(currentAngle, targetAngle);
@@ -74,7 +90,6 @@ public class SwerveModule extends SubsystemBase{
             m_drivingMotor.getPIDController().setReference(v.mag() * Consts.SwerveValues.MAX_DRIVE_SPEED, ControlType.kVelocity);
         }
         else { 
-            SmartDashboard.putString("shalom", "true");
             m_steeringMotor.getPIDController().setReference(currentAngle + optimizedOppositeAngle, ControlType.kPosition);  
             m_drivingMotor.getPIDController().setReference( -1 * v.mag() * Consts.SwerveValues.MAX_DRIVE_SPEED, ControlType.kVelocity);
         }

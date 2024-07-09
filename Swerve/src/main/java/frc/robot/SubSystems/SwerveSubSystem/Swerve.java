@@ -13,10 +13,12 @@ public class Swerve extends SubsystemBase{
 
         modules = new SwerveModule[4]; 
 
-        modules[0] = new SwerveModule(Consts.SwerveValues.TOP_RIGHT_DRIVING_MOTOR_ID, Consts.SwerveValues.TOP_RIGHT_STEERING_MOTOR_ID, Consts.SwerveValues.TOP_RIGHT_ENCODER_ID);
-        modules[1] = new SwerveModule(Consts.SwerveValues.TOP_LEFT_DRIVING_MOTOR_ID, Consts.SwerveValues.TOP_LEFT_STEERING_MOTOR_ID, Consts.SwerveValues.TOP_LEFT_ENCODER_ID);
-        modules[2] = new SwerveModule(Consts.SwerveValues.BOTTOM_LEFT_DRIVING_MOTOR_ID, Consts.SwerveValues.BOTTOM_LEFT_STEERING_MOTOR_ID, Consts.SwerveValues.BOTTOM_LEFT_ENCODER_ID);
-        modules[3] = new SwerveModule(Consts.SwerveValues.BOTTOM_RIGHT_DRIVING_MOTOR_ID, Consts.SwerveValues.BOTTOM_RIGHT_STEERING_MOTOR_ID, Consts.SwerveValues.BOTTOM_RIGHT_ENCODER_ID);
+        modules[0] = new SwerveModule(Consts.SwerveValues.TOP_RIGHT_DRIVING_MOTOR_ID, Consts.SwerveValues.TOP_RIGHT_STEERING_MOTOR_ID, Consts.SwerveValues.TOP_RIGHT_ENCODER_ID,Consts.SwerveValues.TOP_RIGHT_CAN_CODER_OFFSET);
+        modules[1] = new SwerveModule(Consts.SwerveValues.TOP_LEFT_DRIVING_MOTOR_ID, Consts.SwerveValues.TOP_LEFT_STEERING_MOTOR_ID, Consts.SwerveValues.TOP_LEFT_ENCODER_ID,Consts.SwerveValues.TOP_LEFT_CAN_CODER_OFFSET);
+        modules[2] = new SwerveModule(Consts.SwerveValues.BOTTOM_LEFT_DRIVING_MOTOR_ID, Consts.SwerveValues.BOTTOM_LEFT_STEERING_MOTOR_ID, Consts.SwerveValues.BOTTOM_LEFT_ENCODER_ID,Consts.SwerveValues.BOTTOM_LEFT_CAN_CODER_OFFSET);
+        modules[3] = new SwerveModule(Consts.SwerveValues.BOTTOM_RIGHT_DRIVING_MOTOR_ID, Consts.SwerveValues.BOTTOM_RIGHT_STEERING_MOTOR_ID, Consts.SwerveValues.BOTTOM_RIGHT_ENCODER_ID,Consts.SwerveValues.BOTTOM_RIGHT_CAN_CODER_OFFSET);
+
+        
 
     }
 

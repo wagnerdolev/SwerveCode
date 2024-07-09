@@ -14,14 +14,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Commands.DriveByJoysticks;
 import frc.robot.SubSystems.SwerveSubSystem.Swerve;
+import frc.robot.Utils.Consts;
+import frc.robot.Utils.Funcs;
 import frc.robot.Utils.Vector2d;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-
-  public static Vector2d testVec = new Vector2d(3,3);
 
   @Override
   public void robotInit() {
@@ -31,7 +31,28 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-  }
+
+    SmartDashboard.putNumber("Target angle", Math.toDegrees(new Vector2d(RobotContainer.chassis.getLeftX(), RobotContainer.chassis.getLeftY() * -1).rotateBy(Math.toRadians(270)).theta()));
+
+    SmartDashboard.putNumber("Top right angle", Funcs.modulo(Swerve.getInstance().getModules()[0].getSteeringAngle(), 360));
+    SmartDashboard.putNumber("Top left angle", Funcs.modulo(Swerve.getInstance().getModules()[1].getSteeringAngle(), 360));
+    SmartDashboard.putNumber("Bottom left angle", Funcs.modulo(Swerve.getInstance().getModules()[2].getSteeringAngle(), 360));
+    SmartDashboard.putNumber("Bottom right angle", Funcs.modulo(Swerve.getInstance().getModules()[3].getSteeringAngle(), 360));
+
+    SmartDashboard.putNumber("Target speed", new Vector2d(RobotContainer.chassis.getLeftX(), RobotContainer.chassis.getLeftY() * -1).mag() * Consts.SwerveValues.MAX_DRIVE_SPEED);
+
+    SmartDashboard.putNumber("Top right speed", Swerve.getInstance().getModules()[0].getDrivingSpeed());
+    SmartDashboard.putNumber("Top left speed", Swerve.getInstance().getModules()[1].getDrivingSpeed());
+    SmartDashboard.putNumber("Bottom left speed", Swerve.getInstance().getModules()[2].getDrivingSpeed());
+    SmartDashboard.putNumber("Bottom right speed", Swerve.getInstance().getModules()[3].getDrivingSpeed());
+
+    SmartDashboard.putNumber("Top right coder angle",Swerve.getInstance().getModules()[0].getCoderPos());
+    SmartDashboard.putNumber("Top left coder angle",Swerve.getInstance().getModules()[1].getCoderPos());
+    SmartDashboard.putNumber("Bottom left coder angle",Swerve.getInstance().getModules()[2].getCoderPos());
+    SmartDashboard.putNumber("Bottom right coder angle",Swerve.getInstance().getModules()[3].getCoderPos());
+
+    
+    }
 
   @Override
   public void disabledInit() {}
@@ -66,9 +87,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    Swerve.getInstance().getModules()[0].vectorToModule(new Vector2d(RobotContainer.chassis.getLeftX(),RobotContainer.chassis.getLeftY()));
-    //DriveByJoysticks teleop = new DriveByJoysticks(() -> RobotContainer.chassis.getLeftX(), () -> RobotContainer.chassis.getLeftY(), () -> RobotContainer.chassis.getRightX());
-    //teleop.schedule();
+    Supplier<Double> joystickY = () -> RobotContainer.chassis.getLeftY() * -1;
+    DriveByJoysticks teleop = new DriveByJoysticks(() -> RobotContainer.chassis.getLeftX(), joystickY, () -> RobotContainer.chassis.getRightX());
+    teleop.schedule();
+
+    //Swerve.getInstance().getModules()[0].vectorToModule(new Vector2d(RobotContainer.chassis.getLeftX(), RobotContainer.chassis.getLeftY() * -1).rotateBy(Math.toRadians(90)));
     
   }
 
