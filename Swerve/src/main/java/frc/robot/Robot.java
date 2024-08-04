@@ -87,11 +87,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    Supplier<Double> joystickY = () -> RobotContainer.chassis.getLeftY() * -1;
-    DriveByJoysticks teleop = new DriveByJoysticks(() -> RobotContainer.chassis.getLeftX(), joystickY, () -> RobotContainer.chassis.getRightX());
-    teleop.schedule();
+    //Supplier<Double> joystickY = () -> RobotContainer.chassis.getLeftY() * -1;
+    //DriveByJoysticks teleop = new DriveByJoysticks(() -> RobotContainer.chassis.getLeftX(), joystickY, () -> RobotContainer.chassis.getRightX());
+    //teleop.schedule();
 
-    //Swerve.getInstance().getModules()[0].vectorToModule(new Vector2d(RobotContainer.chassis.getLeftX(), RobotContainer.chassis.getLeftY() * -1).rotateBy(Math.toRadians(90)));
+    Swerve.getInstance().getModules()[0].vectorToModule(new Vector2d(RobotContainer.chassis.getLeftX(), RobotContainer.chassis.getLeftY() * -1).rotateBy(Math.toRadians(90)));
     
   }
 
